@@ -1,3 +1,6 @@
+using System;
+
+[Serializable]
 public class Decorator : Composable
 {
     protected Composable warpedComposable;

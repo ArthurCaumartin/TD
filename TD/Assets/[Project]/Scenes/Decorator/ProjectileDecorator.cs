@@ -1,9 +1,24 @@
+using System;
 using System.Linq;
 using UnityEngine;
 
+[Serializable]
 public class ProjectileDecoratorBase : Decorator
 {
-    public ProjectileDecoratorBase(Composable composable) : base(composable) { }
+    public ProjectileDecoratorBase(Composable composable,
+                                   Transform transform,
+                                   float damage,
+                                   float speed,
+                                   Transform target,
+                                   LayerMask layerMask) : base(composable)
+    {
+        this.transform = transform;
+        _layerMask = layerMask;
+        _damage = damage;
+        _speed = speed;
+        _target = target;
+        _lastFramePos = transform.position;
+    }
 
     [SerializeField] private LayerMask _layerMask;
     [SerializeField] private float _damage;
@@ -13,16 +28,6 @@ public class ProjectileDecoratorBase : Decorator
     private Vector3 _lastFramePos;
     private float _distanceWithTarget;
     private Transform transform;
-
-
-    public virtual void Init(Transform transform, float damage, float speed, Transform target, LayerMask layerMask)
-    {
-        _layerMask = layerMask;
-        _damage = damage;
-        _speed = speed;
-        _target = target;
-        _lastFramePos = transform.position;
-    }
 
 
     public override void ComposableUpdate()

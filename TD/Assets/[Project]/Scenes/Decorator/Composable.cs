@@ -1,6 +1,6 @@
+using System;
 
-
-
+[Serializable]
 public class Composable
 {
     public virtual void ComposableUpdate() { }
