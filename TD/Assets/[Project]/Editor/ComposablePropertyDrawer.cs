@@ -1,11 +1,12 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
 using Mathf = UnityEngine.Mathf;
 
-//? Container grouping a Type with its serializable fields, used to iterate the Composable chain
+/// Container grouping a Type with its serializable fields, used to iterate the Composable chain
 public struct TypeFieldInfoContainer
 {
     public Type type;
@@ -29,8 +30,10 @@ public class ComposablePropertyDrawer : PropertyDrawer
         EditorGUI.BeginProperty(position, label, property);
 
         object targetObj = property.serializedObject.targetObject; /// Get MonoBehaviour instance that contain the composable
-        object decoratorInstance = fieldInfo.GetValue(targetObj); /// Get the composable instance to draw
-        List<TypeFieldInfoContainer> containerList = GetMemberContainers(targetObj);
+        Decorator decoratorInstance = fieldInfo.GetValue(targetObj) as Decorator; /// Get the composable instance to draw
+        if (!decoratorInstance) return;
+
+        List<TypeFieldInfoContainer> containerList = ExtractDecoratorChainInfos(decoratorInstance);
 
         { /// Draw each field for all type find in the composable chain
             Rect rect = new Rect(position.position.x,
@@ -52,18 +55,37 @@ public class ComposablePropertyDrawer : PropertyDrawer
         EditorGUI.EndProperty();
     }
 
-    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
+    /// Go through composition chain and return a list with TypeFieldInfoContainer for each Decorator instance
+    private List<TypeFieldInfoContainer> ExtractDecoratorChainInfos(Decorator decoratorInstance)
     {
-        object targetObj = property.serializedObject.targetObject;
-        List<TypeFieldInfoContainer> containers = GetMemberContainers(targetObj);
-        float height = 0;
-        foreach (var container in containers)
+        List<TypeFieldInfoContainer> decoratorInfos = new List<TypeFieldInfoContainer>();
+        Decorator warrpedComposable = decoratorInstance;
+        while (warrpedComposable != null)
         {
-            foreach (var field in container.fieldInfosInType)
-                height += lineHeight + lineSpacing;
-            height += compositionSpacing;
+            decoratorInfos.Add(GetMemberContainers(warrpedComposable));
+            warrpedComposable = warrpedComposable.WarrpedComposable as Decorator;
         }
-        return Mathf.Max(10, height + 20);
+        decoratorInfos.Reverse();
+        return decoratorInfos;
+    }
+
+    /// Return a list with a TypeFieldInfoContainer for filtered field find in the Composable chain
+    public TypeFieldInfoContainer GetMemberContainers(Decorator targetObject)
+    {
+        BindingFlags flag = BindingFlags.Instance
+                            | BindingFlags.Public
+                            | BindingFlags.NonPublic;
+        FieldInfo[] fieldInfoArray = targetObject.GetType().GetFields(flag);
+        List<FieldInfo> infos = new List<FieldInfo>();
+        foreach (var field in fieldInfoArray)
+        {
+            if (field.IsPublic)
+                infos.Add(field);
+
+            if (!field.IsPublic && Attribute.IsDefined(field, typeof(SerializeField)))
+                infos.Add(field);
+        }
+        return new TypeFieldInfoContainer(targetObject.GetType(), infos);
     }
 
     private void DrawField(Rect rect, FieldInfo fieldInfo, object composableInstance)
@@ -95,7 +117,7 @@ public class ComposablePropertyDrawer : PropertyDrawer
             LayerMask layerMask = (LayerMask)fieldInfo.GetValue(composableInstance);
             for (int i = 0; i < 32; i++)
             {
-                if((layerMask.value & (1 << i)) != 0) /// <= thanks IA
+                if ((layerMask.value & (1 << i)) != 0) /// <= thanks IA
                 {
                     layerDisplay += LayerMask.LayerToName(i) + " / ";
                 }
@@ -109,32 +131,17 @@ public class ComposablePropertyDrawer : PropertyDrawer
         }
     }
 
-    /// Return a list with a TypeFieldInfoContainer for filtered field find in the Composable chain
-    public List<TypeFieldInfoContainer> GetMemberContainers(object targetObject)
+    public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
-        object value = fieldInfo.GetValue(targetObject);
-        List<Type> types = value.GetInheranceCompo();
-        types.RemoveAll(obj => obj == typeof(System.Object));
-
-        List<TypeFieldInfoContainer> containerList = new List<TypeFieldInfoContainer>();
-        for (int i = 0; i < types.Count; i++)
+        object targetObj = property.serializedObject.targetObject;
+        List<TypeFieldInfoContainer> containers = ExtractDecoratorChainInfos(fieldInfo.GetValue(targetObj) as Decorator);
+        float height = 0;
+        foreach (var container in containers)
         {
-            BindingFlags flag = BindingFlags.Instance
-                                | BindingFlags.Public
-                                | BindingFlags.NonPublic;
-            FieldInfo[] fieldInfoArray = types[i].GetFields(flag);
-            List<FieldInfo> infos = new List<FieldInfo>();
-            foreach (var field in fieldInfoArray)
-            {
-                if (field.IsPublic)
-                    infos.Add(field);
-
-                if (!field.IsPublic && Attribute.IsDefined(field, typeof(SerializeField)))
-                    infos.Add(field);
-            }
-            containerList.Add(new TypeFieldInfoContainer(types[i], infos));
+            foreach (var field in container.fieldInfosInType)
+                height += lineHeight + lineSpacing;
+            height += compositionSpacing;
         }
-
-        return containerList;
+        return Mathf.Max(10, height + 20);
     }
 }

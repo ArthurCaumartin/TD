@@ -4,6 +4,7 @@ using System;
 public class Decorator : Composable
 {
     protected Composable warpedComposable;
+    public Composable WarrpedComposable => warpedComposable;
 
     public Decorator(Composable composable) { warpedComposable = composable; }
 
