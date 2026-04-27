@@ -3,7 +3,7 @@ using UnityEngine;
 public class TowerBehavior : MonoBehaviour
 {
     [SerializeField] private TargetFinder _targetFinder;
-    [SerializeField] private Projectile _projectilePrefab;
+    [SerializeField] private ProjectileDescriptor _projectilePrefab;
     [SerializeField] private float _attackPerSecond = 1;
     private float _shootTimer = 0;
 
@@ -19,12 +19,8 @@ public class TowerBehavior : MonoBehaviour
         if (_shootTimer > 1 / _attackPerSecond)
         {
             _shootTimer = 0;
-            Projectile p = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
-            p.Init(5, 5, _targetFinder.CurrentTarget);
+            ProjectileDescriptor p = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
+            p.Init(5, 5, _targetFinder.CurrentTarget, _targetFinder.DetectionLayer);
         }
     }
-
-
-
-
 }

@@ -8,6 +8,7 @@ public class TargetFinder : MonoBehaviour
     [SerializeField] private LayerMask _searchLayer;
     [SerializeField, ReadOnly] private Transform _currentTarget;
 
+    public LayerMask DetectionLayer => _searchLayer;
     public Transform CurrentTarget => _currentTarget;
 
 
