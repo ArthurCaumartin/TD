@@ -1278,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 781877448}
     - target: {fileID: 1026346028267442955, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _attackPerSecond
-      value: 2
+      value: 12.02
       objectReference: {fileID: 0}
     - target: {fileID: 1026346028267442955, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _projectilePrefab
@@ -1290,11 +1290,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4271410840018719949, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 10.63
+      value: 9.99
       objectReference: {fileID: 0}
     - target: {fileID: 4271410840018719949, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.33
+      value: 1.49
       objectReference: {fileID: 0}
     - target: {fileID: 4271410840018719949, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: m_LocalPosition.z
@@ -1331,6 +1331,10 @@ PrefabInstance:
     - target: {fileID: 6668479049901368061, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _radius
       value: 15
+      objectReference: {fileID: 0}
+    - target: {fileID: 6668479049901368061, guid: 38a83207156045440960db7e364ae69c, type: 3}
+      propertyPath: _debug.enable
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 6668479049901368061, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _searchLayer.m_Bits
