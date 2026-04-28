@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 
 [Serializable]
 public class Decorator : Composable
@@ -11,5 +12,10 @@ public class Decorator : Composable
     public override void ComposableUpdate()
     {
         warpedComposable?.ComposableUpdate();
+    }
+
+    public virtual Action DrawGizmoDebug()
+    {
+        return null;
     }
 }

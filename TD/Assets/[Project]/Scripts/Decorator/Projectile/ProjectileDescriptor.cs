@@ -3,21 +3,20 @@ using UnityEngine;
 
 public class ProjectileDescriptor : MonoBehaviour
 {
-    public Composable _projectileBehavior;
+    public ProjectileDecoratorBase _projectileBehavior;
 
     public virtual ProjectileDescriptor Init(float damage, float speed, Transform target, LayerMask layerMask)
     {
-        _projectileBehavior = new Composable();
         _projectileBehavior = new ProjectileDecoratorBase(
-            _projectileBehavior,
+            null,
             transform,
             damage,
             speed,
             target,
             layerMask
         );
-        _projectileBehavior = new ProjectileDecoratorSwing(_projectileBehavior, _projectileBehavior as ProjectileDecoratorBase);
-        _projectileBehavior = new ProjectileDecoratorExplosionDelay(_projectileBehavior, _projectileBehavior as ProjectileDecoratorBase, 5);
+        _projectileBehavior = new ProjectileDecoratorSwing(_projectileBehavior, 10, 10);
+        _projectileBehavior = new ProjectileDecoratorExplosionDelay(_projectileBehavior, 5);
 
         return this;
     }
@@ -32,4 +31,9 @@ public class ProjectileDescriptor : MonoBehaviour
         _projectileBehavior.ComposableUpdate();
     }
 
+    void OnDrawGizmos()
+    {
+        if (!_projectileBehavior) return;
+        _projectileBehavior.DrawGizmoDebug()?.Invoke();
+    }
 }

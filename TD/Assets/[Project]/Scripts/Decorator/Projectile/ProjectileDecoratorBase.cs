@@ -1,82 +1,101 @@
 using System;
-using System.Linq;
 using UnityEngine;
 
 [Serializable]
-public class ProjectileDecoratorBase : Decorator
+public class ProjectileDecoratorBase : DecoratorEntity
 {
-
-
-
-    [SerializeField] private LayerMask _layerMask;
-    [SerializeField] private float _damage;
-    [SerializeField] private float _speed;
-    [SerializeField] private Transform _target;
-    private Vector3 _targetPos = Vector3.one;
-    private Vector3 _lastFramePos;
-    private float _distanceWithTarget;
-    protected Transform transform;
+    [SerializeField] protected LayerMask layerMask;
+    [SerializeField] protected float damage;
+    [SerializeField] protected float speed;
+    [SerializeField] protected Transform target;
+    protected Vector3 targetPos = Vector3.one;
+    protected Vector3 lastFramePos;
+    protected float distanceWithTarget;
+    [SerializeField] protected float spriteSize;
 
     public Transform Transform => transform;
-    public LayerMask LayerMask => _layerMask;
-    public float Damage => _damage;
-    public float Speed => _speed;
-    public Transform Target => _target;
-
+    public LayerMask LayerMask => layerMask;
+    public float Damage => damage;
+    public float Speed => speed;
+    public Transform Target => target;
 
     public override void ComposableUpdate()
     {
         base.ComposableUpdate();
 
-        if (_target)
-            _targetPos = _target.position;
+        if (target)
+            targetPos = target.position;
 
-        _distanceWithTarget = Vector2.Distance(transform.position, _targetPos);
-        Vector3 dir = _targetPos - transform.position;
-        dir = dir.normalized;
-        transform.up = dir;
-        transform.Translate(Vector3.up * Time.deltaTime * _speed);
+        Move();
 
         if (DetectTargetOnPath())
         {
-            if (_target) GameObject.Destroy(_target.gameObject);
-            GameObject.Destroy(transform.gameObject);
+            if (target) GameObject.Destroy(target.gameObject);
+            Kill();
             return;
         }
 
-        _lastFramePos = transform.position;
+        if (distanceWithTarget < 0.01)
+        {
+            Kill();
+            return;
+        }
+
+        lastFramePos = transform.position;
+    }
+
+    public void Move()
+    {
+        distanceWithTarget = Vector2.Distance(transform.position, targetPos);
+        Vector3 dir = targetPos - transform.position;
+        dir = dir.normalized;
+        transform.up = dir;
+        transform.Translate(Vector3.up * Time.deltaTime * speed);
     }
 
     protected bool DetectTargetOnPath()
     {
-        Transform[] t = PhysicsCastUtils2D.GetTypeInLine<Transform>(transform.position, _lastFramePos, _layerMask);
-        return t.Contains(_target);
+        Transform[] t = PhysicsCastUtils2D.GetTypeInLine<Transform>(transform.position, lastFramePos, layerMask);
+        return t.Length > 0;
     }
+
+    public override Action DrawGizmoDebug()
+    {
+        if (!transform) return null;
+        return () =>
+        {
+            Debug.DrawLine(transform.position, transform.position - (transform.up * Time.deltaTime * speed), Color.red, 1f);
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, spriteSize / 2);
+        };
+    }
+
 
     public ProjectileDecoratorBase(Composable composable,
                                Transform transform,
                                float damage,
                                float speed,
                                Transform target,
-                               LayerMask layerMask) : base(composable)
+                               LayerMask layerMask) : base(composable, transform)
     {
         this.transform = transform;
-        _layerMask = layerMask;
-        _damage = damage;
-        _speed = speed;
-        _target = target;
+        this.layerMask = layerMask;
+        this.damage = damage;
+        this.speed = speed;
+        this.target = target;
 
-        _lastFramePos = transform.position;
+        lastFramePos = transform.position;
     }
 
-    public ProjectileDecoratorBase(Composable composable, ProjectileDecoratorBase projectileDecoratorBase) : base(composable)
+    //TODO le link au constructeur au dessut (plus clean)
+    public ProjectileDecoratorBase(ProjectileDecoratorBase projectileBase) : base(projectileBase, projectileBase?.Transform)
     {
-        transform = projectileDecoratorBase.Transform;
-        _layerMask = projectileDecoratorBase.LayerMask;
-        _damage = projectileDecoratorBase.Damage;
-        _speed = projectileDecoratorBase.Speed;
-        _target = projectileDecoratorBase.Target;
+        transform = projectileBase.Transform;
+        layerMask = projectileBase.LayerMask;
+        damage = projectileBase.Damage;
+        speed = projectileBase.Speed;
+        target = projectileBase.Target;
 
-        _lastFramePos = transform.position;
+        lastFramePos = transform.position;
     }
 }

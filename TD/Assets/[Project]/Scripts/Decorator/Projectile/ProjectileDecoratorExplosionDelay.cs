@@ -15,8 +15,16 @@ public class ProjectileDecoratorExplosionDelay : ProjectileDecoratorBase
         }
     }
 
-    public ProjectileDecoratorExplosionDelay(Composable composable, ProjectileDecoratorBase projectileDecoratorBase, float delay)
-    : base(composable, projectileDecoratorBase)
+    public override void Kill()
+    {
+        Damagable[] dmg = PhysicsCastUtils2D.GetTypeInOverlapCircle<Damagable>(transform.position, 20, layerMask);
+        foreach (var item in dmg)
+            item.TakeDamage(20000);
+        base.Kill();
+    }
+
+    public ProjectileDecoratorExplosionDelay(ProjectileDecoratorBase projectileBase, float delay)
+    : base(projectileBase)
     {
         _timer = delay;
     }
