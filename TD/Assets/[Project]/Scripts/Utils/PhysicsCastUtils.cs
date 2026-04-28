@@ -1,5 +1,4 @@
 using System;
-using System.Net;
 using UnityEngine;
 
 public static class PhysicsCastUtils2D
@@ -7,24 +6,40 @@ public static class PhysicsCastUtils2D
     public static T[] GetTypeInOverlapCircle<T>(Vector3 point, float raduis, LayerMask layerMask) where T : Component
     {
         Collider2D[] cols = Physics2D.OverlapCircleAll(point, raduis, layerMask);
-        T[] foundArray = new T[cols.Length];
-        for (int i = 0; i < cols.Length; i++)
+        return GetFromColliderArray<T>(cols);
+    }
+
+    public static T[] GetTypeInCircleCast<T>(Vector2 origine, float radius, Vector2 direction) where T : Component
+    {
+        RaycastHit2D[] cols = Physics2D.CircleCastAll(origine, radius, direction);
+        return GetFromRayCastHitArray<T>(cols);
+    }
+
+    public static T[] GetTypeInLine<T>(Vector3 startPoint, Vector3 endPoint, LayerMask layerMask) where T : Component
+    {
+        RaycastHit2D[] hits = Physics2D.LinecastAll(startPoint, endPoint, layerMask);
+        return GetFromRayCastHitArray<T>(hits);
+    }
+
+    private static T[] GetFromColliderArray<T>(Collider2D[] colliders) where T : Component
+    {
+        T[] foundArray = new T[colliders.Length];
+        for (int i = 0; i < colliders.Length; i++)
         {
-            T t = cols[i].GetComponent<T>();
+            T t = colliders[i].GetComponent<T>();
             if (t) foundArray[i] = t;
         }
         foundArray = Array.FindAll(foundArray, x => x != null);
         return foundArray;
     }
 
-    public static T[] GetTypeInLine<T>(Vector3 startPoint, Vector3 endPoint, LayerMask layerMask) where T : Component
+    private static T[] GetFromRayCastHitArray<T>(RaycastHit2D[] colliders) where T : Component
     {
-        RaycastHit2D[] hits = Physics2D.LinecastAll(startPoint, endPoint, layerMask);
-        T[] foundArray = new T[hits.Length];
-        for (int i = 0; i < hits.Length; i++)
+        T[] foundArray = new T[colliders.Length];
+        for (int i = 0; i < colliders.Length; i++)
         {
-            if (!hits[i].collider) continue;
-            T t = hits[i].collider.GetComponent<T>();
+            if (!colliders[i].collider) continue;
+            T t = colliders[i].collider.GetComponent<T>();
             if (t) foundArray[i] = t;
         }
         foundArray = Array.FindAll(foundArray, x => x != null);
