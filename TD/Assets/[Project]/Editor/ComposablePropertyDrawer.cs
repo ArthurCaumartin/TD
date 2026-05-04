@@ -9,10 +9,12 @@ using Mathf = UnityEngine.Mathf;
 /// Container grouping a Type with its serializable fields, used to iterate the Composable chain
 public struct TypeFieldInfoContainer
 {
+    public Decorator decoratorInstance;
     public Type type;
     public List<FieldInfo> fieldInfosInType;
-    public TypeFieldInfoContainer(Type type, List<FieldInfo> fieldInfoArrayInType)
+    public TypeFieldInfoContainer(Decorator decoratorInstance, Type type, List<FieldInfo> fieldInfoArrayInType)
     {
+        this.decoratorInstance = decoratorInstance;
         this.type = type;
         this.fieldInfosInType = fieldInfoArrayInType;
     }
@@ -47,7 +49,7 @@ public class ComposablePropertyDrawer : PropertyDrawer
                 for (int j = 0; j < containerList[i].fieldInfosInType.Count; j++)
                 {
                     rect.y += lineHeight + lineSpacing;
-                    DrawField(rect, containerList[i].fieldInfosInType[j], decoratorInstance);
+                    DrawField(rect, containerList[i].fieldInfosInType[j], containerList[i].decoratorInstance);
                 }
                 rect.y += compositionSpacing;
             }
@@ -85,11 +87,16 @@ public class ComposablePropertyDrawer : PropertyDrawer
             if (!field.IsPublic && Attribute.IsDefined(field, typeof(SerializeField)))
                 infos.Add(field);
         }
-        return new TypeFieldInfoContainer(targetObject.GetType(), infos);
+        return new TypeFieldInfoContainer(targetObject, targetObject.GetType(), infos);
     }
 
     private void DrawField(Rect rect, FieldInfo fieldInfo, object composableInstance)
     {
+        if (composableInstance == null)
+        {
+            Debug.Log("composable == null");
+            return;
+        }
         string name = fieldInfo.Name;
         Type type = fieldInfo.FieldType;
 
