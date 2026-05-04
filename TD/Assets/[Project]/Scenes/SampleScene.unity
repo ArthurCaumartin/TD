@@ -1278,7 +1278,7 @@ PrefabInstance:
       objectReference: {fileID: 781877448}
     - target: {fileID: 1026346028267442955, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _attackPerSecond
-      value: 12.02
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1026346028267442955, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _projectilePrefab
@@ -1334,7 +1334,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 6668479049901368061, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _debug.enable
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6668479049901368061, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: _searchLayer.m_Bits
