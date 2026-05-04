@@ -162,6 +162,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0a8ecc61773a95949b7f8ba7dca50748, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  _targetFinder: {fileID: 6668479049901368061}
+  _projectilePrefab: {fileID: 3173319525750346953, guid: f129d26598590da44ae2e542fe87dd7e, type: 3}
+  _attackPerSecond: 1
 --- !u!114 &6668479049901368061
 MonoBehaviour:
   m_ObjectHideFlags: 0
