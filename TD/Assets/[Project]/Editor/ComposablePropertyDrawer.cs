@@ -23,6 +23,7 @@ public struct TypeFieldInfoContainer
 [CustomPropertyDrawer(typeof(Composable), useForChildren: true)]
 public class ComposablePropertyDrawer : PropertyDrawer
 {
+    private bool _showPrivate = false;
     float lineHeight = 17;
     float lineSpacing = 3;
     float compositionSpacing = 25;
@@ -34,14 +35,16 @@ public class ComposablePropertyDrawer : PropertyDrawer
         object targetObj = property.serializedObject.targetObject; /// Get MonoBehaviour instance that contain the composable
         Decorator decoratorInstance = fieldInfo.GetValue(targetObj) as Decorator; /// Get the composable instance to draw
         if (!decoratorInstance) return;
-
         List<TypeFieldInfoContainer> containerList = ExtractDecoratorChainInfos(decoratorInstance);
+
 
         { /// Draw each field for all type find in the composable chain
             Rect rect = new Rect(position.position.x,
                                  position.position.y,
                                  position.width,
                                  lineHeight);
+            _showPrivate = EditorGUI.ToggleLeft(rect, "Show Private", _showPrivate);
+            rect.y += lineHeight + lineSpacing;
 
             for (int i = 0; i < containerList.Count; i++)
             {
@@ -84,15 +87,15 @@ public class ComposablePropertyDrawer : PropertyDrawer
             if (field.IsPublic)
                 infos.Add(field);
 
-            if (!field.IsPublic && Attribute.IsDefined(field, typeof(SerializeField)))
+            if (!field.IsPublic && (Attribute.IsDefined(field, typeof(SerializeField)) || _showPrivate))
                 infos.Add(field);
         }
         return new TypeFieldInfoContainer(targetObject, targetObject.GetType(), infos);
     }
 
-    private void DrawField(Rect rect, FieldInfo fieldInfo, object composableInstance)
+    private void DrawField(Rect rect, FieldInfo fieldInfo, object decoratorInstance)
     {
-        if (composableInstance == null)
+        if (decoratorInstance == null)
         {
             Debug.Log("composable == null");
             return;
@@ -105,23 +108,33 @@ public class ComposablePropertyDrawer : PropertyDrawer
 
         if (type == typeof(int))
         {
-            EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(composableInstance));
+            EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(decoratorInstance));
         }
 
         if (type == typeof(float))
         {
-            EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(composableInstance));
+            EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(decoratorInstance));
         }
 
         if (type == typeof(bool))
         {
-            EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(composableInstance));
+            EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(decoratorInstance));
+        }
+
+        if (type == typeof(Vector2))
+        {
+            EditorGUI.Vector2Field(rectLabel, name, (Vector2)fieldInfo.GetValue(decoratorInstance));
+        }
+
+        if (type == typeof(Vector3))
+        {
+            EditorGUI.Vector3Field(rectLabel, name, (Vector3)fieldInfo.GetValue(decoratorInstance));
         }
 
         if (type == typeof(LayerMask))
         {
             string layerDisplay = "";
-            LayerMask layerMask = (LayerMask)fieldInfo.GetValue(composableInstance);
+            LayerMask layerMask = (LayerMask)fieldInfo.GetValue(decoratorInstance);
             for (int i = 0; i < 32; i++)
             {
                 if ((layerMask.value & (1 << i)) != 0) /// <= thanks IA
@@ -134,7 +147,7 @@ public class ComposablePropertyDrawer : PropertyDrawer
 
         if (typeof(UnityEngine.Object).IsAssignableFrom(type))
         {
-            EditorGUI.ObjectField(rectLabel, name, (UnityEngine.Object)fieldInfo.GetValue(composableInstance), type, true);
+            EditorGUI.ObjectField(rectLabel, name, (UnityEngine.Object)fieldInfo.GetValue(decoratorInstance), type, true);
         }
     }
 
@@ -142,7 +155,7 @@ public class ComposablePropertyDrawer : PropertyDrawer
     {
         object targetObj = property.serializedObject.targetObject;
         List<TypeFieldInfoContainer> containers = ExtractDecoratorChainInfos(fieldInfo.GetValue(targetObj) as Decorator);
-        float height = 0;
+        float height = lineHeight + lineSpacing;
         foreach (var container in containers)
         {
             foreach (var field in container.fieldInfosInType)
