@@ -14,17 +14,16 @@ public class TargetFinder : MonoBehaviour
 
     private void Update()
     {
-        if (!_currentTarget) _currentTarget = GetTarget();
+        if (!_currentTarget) _currentTarget = FindNewTarget();
         if (!_currentTarget) return;
 
         float distance = Vector3.Distance(transform.position, _currentTarget.position);
         if (distance > _radius) _currentTarget = null;
     }
 
-    private Transform GetTarget()
+    private Transform FindNewTarget()
     {
         Target[] t = PhysicsCastUtils2D.GetTypeInOverlapCircle<Target>(transform.position, _radius, _searchLayer);
-        print(t.Length);
         if (t.Length == 0) return null;
         return t.GetRandom().transform;
     }

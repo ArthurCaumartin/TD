@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class TowerBehavior : MonoBehaviour
+public class TowerDescriptor : MonoBehaviour
 {
     [SerializeField] private TargetFinder _targetFinder;
     [SerializeField] private ProjectileDescriptor _projectilePrefab;
@@ -20,6 +20,7 @@ public class TowerBehavior : MonoBehaviour
         {
             _shootTimer = 0;
             ProjectileDescriptor p = Instantiate(_projectilePrefab, transform.position, Quaternion.identity);
+            p.transform.up = (_targetFinder.CurrentTarget.position - transform.position).normalized;
             p.Init(5, 5, _targetFinder.CurrentTarget, _targetFinder.DetectionLayer);
         }
     }
