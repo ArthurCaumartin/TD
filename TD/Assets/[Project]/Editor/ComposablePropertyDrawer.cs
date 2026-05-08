@@ -108,27 +108,27 @@ public class ComposablePropertyDrawer : PropertyDrawer
 
         if (type == typeof(int))
         {
-            EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(decoratorInstance));
+            fieldInfo.SetValue(decoratorInstance, EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(decoratorInstance)));
         }
 
         if (type == typeof(float))
         {
-            EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(decoratorInstance));
+            fieldInfo.SetValue(decoratorInstance, EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(decoratorInstance)));
         }
 
         if (type == typeof(bool))
         {
-            EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(decoratorInstance));
+            fieldInfo.SetValue(decoratorInstance, EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(decoratorInstance)));
         }
 
         if (type == typeof(Vector2))
         {
-            EditorGUI.Vector2Field(rectLabel, name, (Vector2)fieldInfo.GetValue(decoratorInstance));
+            fieldInfo.SetValue(decoratorInstance, EditorGUI.Vector2Field(rectLabel, name, (Vector2)fieldInfo.GetValue(decoratorInstance)));
         }
 
         if (type == typeof(Vector3))
         {
-            EditorGUI.Vector3Field(rectLabel, name, (Vector3)fieldInfo.GetValue(decoratorInstance));
+            fieldInfo.SetValue(decoratorInstance, EditorGUI.Vector3Field(rectLabel, name, (Vector3)fieldInfo.GetValue(decoratorInstance)));
         }
 
         if (type == typeof(LayerMask))
