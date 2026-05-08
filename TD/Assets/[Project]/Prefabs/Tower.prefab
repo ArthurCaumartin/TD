@@ -164,7 +164,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   _targetFinder: {fileID: 6668479049901368061}
   _projectilePrefab: {fileID: 3173319525750346953, guid: f129d26598590da44ae2e542fe87dd7e, type: 3}
-  _attackPerSecond: 1
+  _statContainer:
+    layerMask:
+      serializedVersion: 2
+      m_Bits: 1024
+    damage: 25
+    attackSpeed: 1.5
+    speed: 5
+    range: 5
 --- !u!114 &6668479049901368061
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -182,7 +189,7 @@ MonoBehaviour:
     colorA: {r: 0, g: 1, b: 0, a: 1}
     colorB: {r: 0, g: 1, b: 0, a: 1}
     colorC: {r: 0, g: 1, b: 0, a: 1}
-  _radius: 5
+  _radius: 3.3
   _searchLayer:
     serializedVersion: 2
     m_Bits: 1024
