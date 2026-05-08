@@ -1,4 +1,5 @@
 using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 [Serializable]
@@ -6,6 +7,8 @@ public abstract class Composable
 {
     public virtual void Spawn() { }
     public virtual void Kill() { }
+
+    public virtual void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat) { }
 
     public virtual void ComposableUpdate() { }
     public virtual void DrawGizmoDebug() { }

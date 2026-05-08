@@ -29,8 +29,8 @@ public class Decorator_Explosif : Decorator
 
     public override void Kill()
     {
-        base.Kill();
         Explode();
+        base.Kill();
     }
 
     public override void DrawGizmoDebug()

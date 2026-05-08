@@ -8,6 +8,7 @@ public class Decorator_MoveSwing : Decorator
     [SerializeField] private float _amplitude;
     [SerializeField] private float _frequency;
 
+    //TODO ajouter la direction du swing dans le constructeur
     public Decorator_MoveSwing(Composable composable, Transform transform, float amplitude, float frequency)
     : base(composable)
     {

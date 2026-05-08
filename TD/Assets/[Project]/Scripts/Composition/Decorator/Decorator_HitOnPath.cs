@@ -21,8 +21,8 @@ public class Decorator_HitOnPath : Decorator
     {
         base.ComposableUpdate();
         Damagable[] t = PhysicsCastUtils2D.GetTypeInLine<Damagable>(_transform.position, _lastFramePosition, _layerMask);
-        Debug.DrawLine(_transform.position, _lastFramePosition, Color.red, 1f);
-        Debug.Log("HitOnPath count : " + t.Length);
+        // Debug.DrawLine(_transform.position, _lastFramePosition, Color.red, 1f);
+        // Debug.Log("HitOnPath count : " + t.Length);
         if (t.Length != 0)
         {
             Damagable d = t.GetNearset(_transform.position);
