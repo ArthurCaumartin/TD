@@ -10,8 +10,7 @@ public class TowerInstaller : DecoratorInstaller
 
     public void Start()
     {
-        behavior = new Decorator_Shoot(null, transform, 3);
-        behavior = new Decorator_MoveSwing(behavior, transform, 1, 1);
+        behavior = new Decorator_ShootTarget(null, transform, _statContainer, 1);
         SubToDecoratorEvent();
 
         behavior.Spawn();

@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class ProjectileInstaller : DecoratorInstaller
 {
-    public void Init(float damage, float speed, Transform target, LayerMask layerMask)
+    public void Init(StatContainer stats, Decorator decoratorComposition)
     {
-        behavior = new Decorator_MoveToTarget(null, transform, target, speed);
-        behavior = new Decorator_HitOnPath(behavior, transform, damage, layerMask);
-
+        // behavior = new Decorator_MoveToTarget(null, transform, target, stats.speed);
+        // behavior = new Decorator_HitOnPath(behavior, transform, stats.damage, stats.layerMask);
+        behavior = decoratorComposition;
         behavior.Spawn();
         SubToDecoratorEvent();
     }

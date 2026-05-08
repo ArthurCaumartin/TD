@@ -1,16 +1,22 @@
 using System;
+using TMPro;
 using UnityEngine;
+using UnityEngine.UIElements;
 
-public class Decorator_Shoot : Decorator
+// Set la reference au TargetFinder pour get la target, plutot que de la psser en parametre a Shoot
+
+public class Decorator_ShootTarget : Decorator
 {
     [SerializeField] private Transform _shootPoint;
     [SerializeField] private int _projectileCount;
+    [SerializeField] private StatContainer _stats;
 
-    public Decorator_Shoot(Composable composable, Transform shootPoint, int projectileCount)
+    public Decorator_ShootTarget(Composable composable, Transform shootPoint, StatContainer stats, int projectileCount)
     : base(composable)
     {
         this._projectileCount = projectileCount;
         this._shootPoint = shootPoint;
+        this._stats = stats;
     }
 
     public override void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stats)
@@ -36,11 +42,16 @@ public class Decorator_Shoot : Decorator
         }
     }
 
-    private void InstantiateProjectile(ProjectileInstaller projectile, Transform target, StatContainer stat, Vector2 position)
+    private void InstantiateProjectile(ProjectileInstaller projectile, Transform target, StatContainer stats, Vector2 position)
     {
         ProjectileInstaller p = GameObject.Instantiate(projectile, position, Quaternion.identity);
         p.transform.up = (target.position - _shootPoint.position).normalized;
-        p.Init(stat.damage, stat.speed, target, stat.layerMask);
+
+        Decorator behavior = new Decorator_MoveToTarget(null, p.transform, target, stats);
+        behavior = new Decorator_HitOnPath(behavior, p.transform, stats);
+        behavior = new Decorator_ShootBurstOnDeath(behavior, p.transform, projectile, stats, 50);
+
+        p.Init(stats, behavior);
     }
 
 }

@@ -2,6 +2,17 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
+// Projectile
+    // Move
+    // Hit
+
+// Tower
+    // Aim => call to rotate tower
+    // Shoot
+    
+
+
+
 [Serializable]
 public class Decorator : Composable
 {
@@ -29,5 +40,4 @@ public class Decorator : Composable
         if (warpedComposable != null)
             warpedComposable.SubToKillEvent(action);
     }
-
 }

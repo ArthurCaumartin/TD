@@ -3,16 +3,14 @@ using UnityEngine;
 public class Decorator_HitOnPath : Decorator
 {
     [SerializeField] private Transform _transform;
-    [SerializeField] private float _damage;
-    [SerializeField] private LayerMask _layerMask;
+    [SerializeField] private StatContainer _stats;
     private Vector3 _lastFramePosition;
 
-    public Decorator_HitOnPath(Composable composable, Transform transform, float damage, LayerMask layerMask)
+    public Decorator_HitOnPath(Composable composable, Transform transform, StatContainer stats)
     : base(composable)
     {
         this._transform = transform;
-        this._damage = damage;
-        this._layerMask = layerMask;
+        this._stats = stats;
 
         _lastFramePosition = _transform.position;
     }
@@ -20,7 +18,7 @@ public class Decorator_HitOnPath : Decorator
     public override void ComposableUpdate()
     {
         base.ComposableUpdate();
-        Damagable[] t = PhysicsCastUtils2D.GetTypeInLine<Damagable>(_transform.position, _lastFramePosition, _layerMask);
+        Damagable[] t = PhysicsCastUtils2D.GetTypeInLine<Damagable>(_transform.position, _lastFramePosition, _stats.layerMask);
         // Debug.DrawLine(_transform.position, _lastFramePosition, Color.red, 1f);
         // Debug.Log("HitOnPath count : " + t.Length);
         if (t.Length != 0)
@@ -28,7 +26,7 @@ public class Decorator_HitOnPath : Decorator
             Damagable d = t.GetNearset(_transform.position);
             if (d)
             {
-                d.TakeDamage(_damage);
+                d.TakeDamage(_stats.damage);
                 killCallEvent.Invoke();
                 return;
             }
