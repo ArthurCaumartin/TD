@@ -1,7 +1,8 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
+using BehaviorComposition;
+using BehaviorComposition.Decorator;
 using UnityEditor;
 using UnityEngine;
 using Mathf = UnityEngine.Mathf;
@@ -52,7 +53,7 @@ public class ComposablePropertyDrawer : PropertyDrawer
                 for (int j = 0; j < containerList[i].fieldInfosInType.Count; j++)
                 {
                     rect.y += lineHeight + lineSpacing;
-                    DrawField(rect, containerList[i].fieldInfosInType[j], containerList[i].decoratorInstance);
+                    EditorDrawUtils.DrawField(rect, containerList[i].fieldInfosInType[j], containerList[i].decoratorInstance);
                 }
                 rect.y += compositionSpacing;
             }
@@ -93,63 +94,63 @@ public class ComposablePropertyDrawer : PropertyDrawer
         return new TypeFieldInfoContainer(targetObject, targetObject.GetType(), infos);
     }
 
-    private void DrawField(Rect rect, FieldInfo fieldInfo, object decoratorInstance)
-    {
-        if (decoratorInstance == null)
-        {
-            Debug.Log("composable == null");
-            return;
-        }
-        string name = fieldInfo.Name;
-        Type type = fieldInfo.FieldType;
+    // private void DrawField(Rect rect, FieldInfo fieldInfo, object objectInstance)
+    // {
+    //     if (objectInstance == null)
+    //     {
+    //         Debug.Log("composable == null");
+    //         return;
+    //     }
+    //     string name = fieldInfo.Name;
+    //     Type type = fieldInfo.FieldType;
 
-        Rect rectLabel = new Rect(rect.x + 20, rect.y, rect.width - 20, rect.height);
-        EditorGUI.LabelField(rectLabel, name + " : ");
+    //     Rect rectLabel = new Rect(rect.x + 20, rect.y, rect.width - 20, rect.height);
+    //     EditorGUI.LabelField(rectLabel, name + " : ");
 
-        if (type == typeof(int))
-        {
-            fieldInfo.SetValue(decoratorInstance, EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(decoratorInstance)));
-        }
+    //     if (type == typeof(int))
+    //     {
+    //         fieldInfo.SetValue(objectInstance, EditorGUI.IntField(rectLabel, name, (int)fieldInfo.GetValue(objectInstance)));
+    //     }
 
-        if (type == typeof(float))
-        {
-            fieldInfo.SetValue(decoratorInstance, EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(decoratorInstance)));
-        }
+    //     if (type == typeof(float))
+    //     {
+    //         fieldInfo.SetValue(objectInstance, EditorGUI.FloatField(rectLabel, name, (float)fieldInfo.GetValue(objectInstance)));
+    //     }
 
-        if (type == typeof(bool))
-        {
-            fieldInfo.SetValue(decoratorInstance, EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(decoratorInstance)));
-        }
+    //     if (type == typeof(bool))
+    //     {
+    //         fieldInfo.SetValue(objectInstance, EditorGUI.Toggle(rectLabel, name, (bool)fieldInfo.GetValue(objectInstance)));
+    //     }
 
-        if (type == typeof(Vector2))
-        {
-            fieldInfo.SetValue(decoratorInstance, EditorGUI.Vector2Field(rectLabel, name, (Vector2)fieldInfo.GetValue(decoratorInstance)));
-        }
+    //     if (type == typeof(Vector2))
+    //     {
+    //         fieldInfo.SetValue(objectInstance, EditorGUI.Vector2Field(rectLabel, name, (Vector2)fieldInfo.GetValue(objectInstance)));
+    //     }
 
-        if (type == typeof(Vector3))
-        {
-            fieldInfo.SetValue(decoratorInstance, EditorGUI.Vector3Field(rectLabel, name, (Vector3)fieldInfo.GetValue(decoratorInstance)));
-        }
+    //     if (type == typeof(Vector3))
+    //     {
+    //         fieldInfo.SetValue(objectInstance, EditorGUI.Vector3Field(rectLabel, name, (Vector3)fieldInfo.GetValue(objectInstance)));
+    //     }
 
-        if (type == typeof(LayerMask))
-        {
-            string layerDisplay = "";
-            LayerMask layerMask = (LayerMask)fieldInfo.GetValue(decoratorInstance);
-            for (int i = 0; i < 32; i++)
-            {
-                if ((layerMask.value & (1 << i)) != 0) /// <= thanks IA
-                {
-                    layerDisplay += LayerMask.LayerToName(i) + " / ";
-                }
-            }
-            EditorGUI.TextField(rectLabel, name, layerDisplay);
-        }
+    //     if (type == typeof(LayerMask))
+    //     {
+    //         string layerDisplay = "";
+    //         LayerMask layerMask = (LayerMask)fieldInfo.GetValue(objectInstance);
+    //         for (int i = 0; i < 32; i++)
+    //         {
+    //             if ((layerMask.value & (1 << i)) != 0) /// <= thanks IA
+    //             {
+    //                 layerDisplay += LayerMask.LayerToName(i) + " / ";
+    //             }
+    //         }
+    //         EditorGUI.TextField(rectLabel, name, layerDisplay);
+    //     }
 
-        if (typeof(UnityEngine.Object).IsAssignableFrom(type))
-        {
-            EditorGUI.ObjectField(rectLabel, name, (UnityEngine.Object)fieldInfo.GetValue(decoratorInstance), type, true);
-        }
-    }
+    //     if (typeof(UnityEngine.Object).IsAssignableFrom(type))
+    //     {
+    //         EditorGUI.ObjectField(rectLabel, name, (UnityEngine.Object)fieldInfo.GetValue(objectInstance), type, true);
+    //     }
+    // }
 
     public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
     {
