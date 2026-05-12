@@ -1,39 +1,40 @@
 using UnityEngine;
 
-public class Decorator_ShootBurstOnDeath : Decorator
+namespace BehaviorComposition.Decorator
 {
-    private Transform _transform;
-    private ProjectileInstaller _projectilePrefab;
-    private StatContainer _stats;
-    private int _projectileCount;
-
-    public Decorator_ShootBurstOnDeath(Composable composable, Transform transform, ProjectileInstaller projectilePrefab, StatContainer stats, int projectileCount)
-    : base(composable)
+    public class Decorator_ShootBurstOnDeath : Decorator
     {
-        this._transform = transform;
-        this._projectilePrefab = projectilePrefab;
-        this._projectileCount = projectileCount;
-        this._stats = stats;
-    }
+        private Transform _transform;
+        private ProjectileInstaller _projectilePrefab;
+        private StatContainer _stats;
+        private int _projectileCount;
 
-    public override void Kill()
-    {
-        base.Kill();
-
-        for (float i = 0; i < 1; i += 1f / _projectileCount)
+        public Decorator_ShootBurstOnDeath(Composable composable, Transform transform, ProjectileInstaller projectilePrefab, StatContainer stats, int projectileCount)
+        : base(composable)
         {
-            float x = Mathf.Cos(2 * Mathf.PI * i);
-            float y = Mathf.Sin(2 * Mathf.PI * i);
-            Vector3 spawnPoint = _transform.position + new Vector3(x, y, 0);
-            Vector2 dir = (spawnPoint - _transform.position).normalized;
-            ProjectileInstaller p = GameObject.Instantiate(_projectilePrefab, spawnPoint, Quaternion.LookRotation(Vector3.forward, dir));
-
-            Decorator behavior = new Decorator_MoveUp(null, p.transform, _stats);
-            behavior = new Decorator_HitOnPath(behavior, p.transform, _stats);
-
-            p.Init(_stats, behavior);
+            this._transform = transform;
+            this._projectilePrefab = projectilePrefab;
+            this._projectileCount = projectileCount;
+            this._stats = stats;
         }
 
+        public override void Kill()
+        {
+            base.Kill();
 
+            for (float i = 0; i < 1; i += 1f / _projectileCount)
+            {
+                float x = Mathf.Cos(2 * Mathf.PI * i);
+                float y = Mathf.Sin(2 * Mathf.PI * i);
+                Vector3 spawnPoint = _transform.position + new Vector3(x, y, 0);
+                Vector2 dir = (spawnPoint - _transform.position).normalized;
+                ProjectileInstaller p = GameObject.Instantiate(_projectilePrefab, spawnPoint, Quaternion.LookRotation(Vector3.forward, dir));
+
+                Decorator behavior = new Decorator_MoveUp(null, p.transform, _stats);
+                behavior = new Decorator_HitOnPath(behavior, p.transform, _stats);
+
+                p.Init(_stats, behavior);
+            }
+        }
     }
 }

@@ -1,23 +1,27 @@
 using System;
+using BehaviorComposition;
 using UnityEngine;
 using UnityEngine.Events;
 
-[Serializable]
-public abstract class Composable
+namespace BehaviorComposition
 {
-    public virtual void Spawn() { }
-    public virtual void Kill() { }
-
-    public virtual void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat) { }
-
-    public virtual void ComposableUpdate() { }
-    public virtual void DrawGizmoDebug() { }
-
-    public virtual void SubToKillEvent(UnityAction action) { }
-
-
-    public static bool operator !(Composable state)
+    [Serializable]
+    public abstract class Composable
     {
-        return state == null;
+        public virtual void Spawn() { }
+        public virtual void Kill() { }
+
+        public virtual void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat) { }
+
+        public virtual void ComposableUpdate() { }
+        public virtual void DrawGizmoDebug() { }
+
+        public virtual void SubToKillEvent(UnityAction action) { }
+
+
+        public static bool operator !(Composable state)
+        {
+            return state == null;
+        }
     }
 }

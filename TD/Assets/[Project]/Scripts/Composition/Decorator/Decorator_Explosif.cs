@@ -1,38 +1,41 @@
 using UnityEngine;
 
-public class Decorator_Explosif : Decorator
+namespace BehaviorComposition.Decorator
 {
-    [SerializeField] private Transform _transform;
-    [SerializeField] private StatContainer _stats;
-
-    public Decorator_Explosif(Composable composable, Transform transform, StatContainer stats)
-    : base(composable)
+    public class Decorator_Explosif : Decorator
     {
-        _transform = transform;
-        this._stats = stats;
-    }
+        [SerializeField] private Transform _transform;
+        [SerializeField] private StatContainer _stats;
 
-    private void Explode()
-    {
-        Debug.Log("explosifDamage");
-        Damagable[] dmg = PhysicsCastUtils2D.GetTypeInOverlapCircle<Damagable>(_transform.position, _stats.range / 5, _stats.layerMask);
-        Debug.Log(dmg.Length);
-        foreach (var item in dmg)
+        public Decorator_Explosif(Composable composable, Transform transform, StatContainer stats)
+        : base(composable)
         {
-            item.TakeDamage(_stats.damage);
+            _transform = transform;
+            this._stats = stats;
         }
-    }
 
-    public override void Kill()
-    {
-        Explode();
-        base.Kill();
-    }
+        private void Explode()
+        {
+            Debug.Log("explosifDamage");
+            Damagable[] dmg = PhysicsCastUtils2D.GetTypeInOverlapCircle<Damagable>(_transform.position, _stats.range / 5, _stats.layerMask);
+            Debug.Log(dmg.Length);
+            foreach (var item in dmg)
+            {
+                item.TakeDamage(_stats.damage);
+            }
+        }
 
-    public override void DrawGizmoDebug()
-    {
-        base.DrawGizmoDebug();
-        Gizmos.color = Color.red;
-        Gizmos.DrawWireSphere(_transform.position, _stats.range / 5);
+        public override void Kill()
+        {
+            Explode();
+            base.Kill();
+        }
+
+        public override void DrawGizmoDebug()
+        {
+            base.DrawGizmoDebug();
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(_transform.position, _stats.range / 5);
+        }
     }
 }

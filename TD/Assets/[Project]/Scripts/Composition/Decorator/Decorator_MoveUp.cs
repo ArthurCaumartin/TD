@@ -1,20 +1,23 @@
 using UnityEngine;
 
-public class Decorator_MoveUp : Decorator
+namespace BehaviorComposition.Decorator
 {
-    [SerializeField] private Transform _transform;
-    [SerializeField] private StatContainer _stats;
-
-    public Decorator_MoveUp(Composable composable, Transform transform, StatContainer stats)
-    : base(composable)
+    public class Decorator_MoveUp : Decorator
     {
-        this._transform = transform;
-        this._stats = stats;
-    }
+        [SerializeField] private Transform _transform;
+        [SerializeField] private StatContainer _stats;
 
-    public override void ComposableUpdate()
-    {
-        base.ComposableUpdate();
-        _transform.Translate(Vector2.up * Time.deltaTime * _stats.speed, Space.Self);
+        public Decorator_MoveUp(Composable composable, Transform transform, StatContainer stats)
+        : base(composable)
+        {
+            this._transform = transform;
+            this._stats = stats;
+        }
+
+        public override void ComposableUpdate()
+        {
+            base.ComposableUpdate();
+            _transform.Translate(Vector2.up * Time.deltaTime * _stats.speed, Space.Self);
+        }
     }
 }

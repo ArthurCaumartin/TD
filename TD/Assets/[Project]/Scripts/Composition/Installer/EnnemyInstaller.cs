@@ -1,5 +1,5 @@
 using UnityEngine;
-
+using BehaviorComposition.Decorator;
 
 public class EnnemyInstaller : MonoBehaviour
 {
@@ -39,6 +39,4 @@ public class EnnemyInstaller : MonoBehaviour
             _pathIndex++;
         }
     }
-
-
 }

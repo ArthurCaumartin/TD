@@ -2,42 +2,34 @@ using System;
 using UnityEngine;
 using UnityEngine.Events;
 
-// Projectile
-    // Move
-    // Hit
-
-// Tower
-    // Aim => call to rotate tower
-    // Shoot
-    
-
-
-
-[Serializable]
-public class Decorator : Composable
+namespace BehaviorComposition.Decorator
 {
-    protected Composable warpedComposable;
-    public Composable WarrpedComposable => warpedComposable;
-
-    protected UnityEvent killCallEvent = new UnityEvent();
-
-    public Decorator(Composable composable) { warpedComposable = composable; }
-
-    public override void Spawn() { warpedComposable?.Spawn(); }
-    public override void Kill() { warpedComposable?.Kill(); }
-
-    public override void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat)
+    [Serializable]
+    public class Decorator : Composable
     {
-        warpedComposable?.Shoot(projectile, target, stat);
-    }
+        protected Composable warpedComposable;
+        public Composable WarrpedComposable => warpedComposable;
 
-    public override void ComposableUpdate() { warpedComposable?.ComposableUpdate(); }
-    public override void DrawGizmoDebug() { warpedComposable?.DrawGizmoDebug(); }
+        protected UnityEvent killCallEvent = new UnityEvent();
 
-    public override void SubToKillEvent(UnityAction action)
-    {
-        killCallEvent.AddListener(action);
-        if (warpedComposable != null)
-            warpedComposable.SubToKillEvent(action);
+        public Decorator(Composable composable) { warpedComposable = composable; }
+
+        public override void Spawn() { warpedComposable?.Spawn(); }
+        public override void Kill() { warpedComposable?.Kill(); }
+
+        public override void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat)
+        {
+            warpedComposable?.Shoot(projectile, target, stat);
+        }
+
+        public override void ComposableUpdate() { warpedComposable?.ComposableUpdate(); }
+        public override void DrawGizmoDebug() { warpedComposable?.DrawGizmoDebug(); }
+
+        public override void SubToKillEvent(UnityAction action)
+        {
+            killCallEvent.AddListener(action);
+            if (warpedComposable != null)
+                warpedComposable.SubToKillEvent(action);
+        }
     }
 }
