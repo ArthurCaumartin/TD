@@ -6,18 +6,20 @@ namespace BehaviorComposition.Decorator
     {
         [SerializeField] private Transform _transform;
         [SerializeField] private StatContainer _stats;
+        private float _radius;
 
-        public Decorator_Explosif(Composable composable, Transform transform, StatContainer stats)
+        public Decorator_Explosif(Composable composable, Transform transform, StatContainer stats, float radius)
         : base(composable)
         {
             _transform = transform;
             this._stats = stats;
+            this._radius = radius;
         }
 
         private void Explode()
         {
             Debug.Log("explosifDamage");
-            Damagable[] dmg = PhysicsCastUtils2D.GetTypeInOverlapCircle<Damagable>(_transform.position, _stats.range / 5, _stats.layerMask);
+            Damagable[] dmg = PhysicsCastUtils2D.GetTypeInOverlapCircle<Damagable>(_transform.position, _radius, _stats.layerMask);
             Debug.Log(dmg.Length);
             foreach (var item in dmg)
             {

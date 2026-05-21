@@ -60,7 +60,15 @@ public static class EditorDrawUtils
 
         if (typeof(UnityEngine.Object).IsAssignableFrom(type))
         {
-            EditorGUI.ObjectField(rectLabel, name, (UnityEngine.Object)fieldInfo.GetValue(objectInstance), type, true);
+            fieldInfo.SetValue(objectInstance, 
+                EditorGUI.ObjectField(
+                    rectLabel,
+                    name,
+                    (UnityEngine.Object)fieldInfo.GetValue(objectInstance),
+                    type,
+                    false
+                )
+            );
         }
     }
 

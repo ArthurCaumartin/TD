@@ -11,11 +11,11 @@ namespace BehaviorComposition.Decorator
         private Vector3 _targetPos;
         private float _sqrDistance;
 
-        public Decorator_MoveToTarget(Composable composable, Transform transform, Transform target, StatContainer stats)
+        public Decorator_MoveToTarget(Composable composable, Transform transform, TargetFinder targetFinder, StatContainer stats)
         : base(composable)
         {
             this._transform = transform;
-            this._target = target;
+            this._target = targetFinder.CurrentTarget;
             this._stats = stats;
 
             _targetPos = _transform.position;

@@ -17,9 +17,9 @@ namespace BehaviorComposition.Decorator
         public override void Spawn() { warpedComposable?.Spawn(); }
         public override void Kill() { warpedComposable?.Kill(); }
 
-        public override void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stat)
+        public override void Shoot(ProjectileInstaller projectile, StatContainer stats)
         {
-            warpedComposable?.Shoot(projectile, target, stat);
+            warpedComposable?.Shoot(projectile, stats);
         }
 
         public override void ComposableUpdate() { warpedComposable?.ComposableUpdate(); }

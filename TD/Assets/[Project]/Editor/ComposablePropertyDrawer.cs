@@ -13,11 +13,11 @@ public struct TypeFieldInfoContainer
     public Decorator decoratorInstance;
     public Type type;
     public List<FieldInfo> fieldInfosInType;
-    public TypeFieldInfoContainer(Decorator decoratorInstance, Type type, List<FieldInfo> fieldInfoArrayInType)
+    public TypeFieldInfoContainer(Decorator decoratorInstance, Type type, List<FieldInfo> fieldInfoInType)
     {
         this.decoratorInstance = decoratorInstance;
         this.type = type;
-        this.fieldInfosInType = fieldInfoArrayInType;
+        this.fieldInfosInType = fieldInfoInType;
     }
 }
 

@@ -8,21 +8,24 @@ namespace BehaviorComposition.Decorator
         [SerializeField] private Transform _shootPoint;
         [SerializeField] private int _projectileCount;
         [SerializeField] private StatContainer _stats;
+        private TargetFinder _targetFinder;
 
-        public Decorator_ShootTarget(Composable composable, Transform shootPoint, StatContainer stats, int projectileCount)
+        public Decorator_ShootTarget(Composable composable, Transform shootPoint, TargetFinder targetFinder, StatContainer stats, int projectileCount)
         : base(composable)
         {
             this._projectileCount = projectileCount;
             this._shootPoint = shootPoint;
             this._stats = stats;
+            this._targetFinder = targetFinder;
         }
 
-        public override void Shoot(ProjectileInstaller projectile, Transform target, StatContainer stats)
+        public override void Shoot(ProjectileInstaller projectile, StatContainer stats)
         {
-            base.Shoot(projectile, target, stats);
+            if(!_targetFinder.CurrentTarget) return;
+            base.Shoot(projectile, stats);
             if (_projectileCount == 1)
             {
-                InstantiateProjectile(projectile, target, stats, _shootPoint.position);
+                InstantiateProjectile(projectile, _targetFinder, stats, _shootPoint.position);
                 return;
             }
             Debug.Log("----I----");
@@ -36,20 +39,15 @@ namespace BehaviorComposition.Decorator
                     _shootPoint.position + _shootPoint.right,
                     time);
 
-                InstantiateProjectile(projectile, target, stats, pos);
+                InstantiateProjectile(projectile, _targetFinder, stats, pos);
             }
         }
 
-        private void InstantiateProjectile(ProjectileInstaller projectile, Transform target, StatContainer stats, Vector2 position)
+        private void InstantiateProjectile(ProjectileInstaller projectile, TargetFinder targetFinder, StatContainer stats, Vector2 position)
         {
             ProjectileInstaller p = GameObject.Instantiate(projectile, position, Quaternion.identity);
-            p.transform.up = (target.position - _shootPoint.position).normalized;
-
-            Decorator behavior = new Decorator_MoveToTarget(null, p.transform, target, stats);
-            behavior = new Decorator_HitOnPath(behavior, p.transform, stats);
-            behavior = new Decorator_ShootBurstOnDeath(behavior, p.transform, projectile, stats, 50);
-
-            p.Init(stats, behavior);
+            p.transform.up = (targetFinder.CurrentTarget.position - _shootPoint.position).normalized;
+            p.Init(stats);
         }
     }
 }

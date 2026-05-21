@@ -96,7 +96,7 @@ LightmapSettings:
     m_ExportTrainingData: 0
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000000, guid: 4aea945a8549d7e49bb10d6209945995, type: 2}
   m_LightingSettings: {fileID: 0}
 --- !u!196 &4
 NavMeshSettings:
@@ -576,6 +576,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 1026346028267442955, guid: 38a83207156045440960db7e364ae69c, type: 3}
+      propertyPath: _upgradeTower
+      value: 
+      objectReference: {fileID: 11400000, guid: 309eab72fa5c5a74c989dbe36d9d92c4, type: 2}
     - target: {fileID: 2829116516893003428, guid: 38a83207156045440960db7e364ae69c, type: 3}
       propertyPath: m_Name
       value: Tower

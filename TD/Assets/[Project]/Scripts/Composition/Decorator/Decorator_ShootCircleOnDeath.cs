@@ -2,14 +2,14 @@ using UnityEngine;
 
 namespace BehaviorComposition.Decorator
 {
-    public class Decorator_ShootBurstOnDeath : Decorator
+    public class Decorator_ShootCircleOnDeath : Decorator
     {
         private Transform _transform;
         private ProjectileInstaller _projectilePrefab;
         private StatContainer _stats;
         private int _projectileCount;
 
-        public Decorator_ShootBurstOnDeath(Composable composable, Transform transform, ProjectileInstaller projectilePrefab, StatContainer stats, int projectileCount)
+        public Decorator_ShootCircleOnDeath(Composable composable, Transform transform, ProjectileInstaller projectilePrefab, StatContainer stats, int projectileCount)
         : base(composable)
         {
             this._transform = transform;
@@ -28,12 +28,10 @@ namespace BehaviorComposition.Decorator
                 float y = Mathf.Sin(2 * Mathf.PI * i);
                 Vector3 spawnPoint = _transform.position + new Vector3(x, y, 0);
                 Vector2 dir = (spawnPoint - _transform.position).normalized;
-                ProjectileInstaller p = GameObject.Instantiate(_projectilePrefab, spawnPoint, Quaternion.LookRotation(Vector3.forward, dir));
+                ProjectileInstaller p = 
+                GameObject.Instantiate(_projectilePrefab, spawnPoint, Quaternion.LookRotation(Vector3.forward, dir));
 
-                Decorator behavior = new Decorator_MoveUp(null, p.transform, _stats);
-                behavior = new Decorator_HitOnPath(behavior, p.transform, _stats);
-
-                p.Init(_stats, behavior);
+                p.Init(_stats);
             }
         }
     }
